@@ -1,0 +1,11 @@
+    describe('#toString()', () => {
+        it('true::boolean should be converted to boolean::text', () => {
+            assert.equal(booleanType.stringify(true), 'true');
+        });
+        it('false::boolean should be converted to false::text', () => {
+            assert.equal(booleanType.stringify(false), 'false');
+        });
+        it('non-boolean should be converted to null::text', () => {
+            assert.equal(booleanType.stringify('200.1'), 'null');
+        });
+    });
