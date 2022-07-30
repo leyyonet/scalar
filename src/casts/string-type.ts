@@ -1,8 +1,9 @@
+import memoize from 'memoizee-decorator';
 import {Bind, Fqn} from "@leyyo/fqn";
 import {leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse, castPool} from "@leyyo/cast";
 import {FQN_NAME} from "../internal-component";
-import {ScalarLike, StringAlias, StringCast, StringOpt} from "../index-types";
+import {StringAlias, StringCast, StringOpt} from "../index-types";
 import {AbstractScalar} from "../abstract-scalar";
 
 type _T = StringAlias;
@@ -12,13 +13,15 @@ type _O = StringOpt;
 @AssignCast()
 @Bind()
 export class StringType extends AbstractScalar<_T, _O> implements StringCast {
-    constructor(scalar: ScalarLike) {
-        super(scalar);
+    constructor() {
+        super();
         castPool.copy(this, String);
     }
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         return leyyo.is.string(value);
     }
+    @memoize({})
     cast(value: unknown, opt?: _O): _T {
         return leyyo.primitive.string(value, opt);
     }
@@ -123,12 +126,12 @@ export class StringType extends AbstractScalar<_T, _O> implements StringCast {
     // endregion string-word
     // region string-html
     hasHtmlTag(str: string): boolean {
-        return typeof str === 'string' && /<[a-z0-9\-][\s\S]*>/i.test(str);
+        return typeof str === 'string' && /<[a-z\d\-][\s\S]*>/i.test(str);
     }
     stripTags(input: string, allowed: Array<string>): string {
         allowed = allowed.map(tag => tag.toLowerCase());
-        allowed = allowed.filter(tag => /[a-z][a-z0-9\-]*/g.test(tag));
-        const pattern = /<\/?([a-z][a-z0-9|-]*)\b[^>]*>/gi;
+        allowed = allowed.filter(tag => /[a-z][a-z\d\-]*/g.test(tag));
+        const pattern = /<\/?([a-z][a-z\d|-]*)\b[^>]*>/gi;
         return leyyo.primitive.string(input.replace(pattern, ($0, $1) => allowed.includes($1.toLowerCase()) ? $0 : '').trim());
     }
     stripTagsAll(value: string): string {
@@ -143,3 +146,4 @@ export class StringType extends AbstractScalar<_T, _O> implements StringCast {
     }
 
 }
+export const stringType = new StringType();

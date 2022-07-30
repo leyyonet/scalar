@@ -1,3 +1,6 @@
+// noinspection JSUnusedGlobalSymbols
+
+import memoize from 'memoizee-decorator';
 import {Bind, Fqn} from "@leyyo/fqn";
 import {DeveloperException, leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse} from "@leyyo/cast";
@@ -13,19 +16,21 @@ type _O = UuidOpt;
 @AssignCast('Uuid')
 @Bind()
 export class UuidType extends AbstractScalar<_T, _O> implements UuidCast {
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         if (leyyo.is.empty(value)) {return false;}
         return typeof value === 'string' && uuid.validate(value);
     }
+    @memoize({})
     cast(value: unknown, opt?: _O): _T {
         const text = leyyo.primitive.text(value, opt);
         if (text && !uuid.validate(text)) {
             new DeveloperException('scalar.invalid-uuid', {field: opt?.field}).with(this).raise(!opt?.silent);
         }
-        return this._scalar.string.ly_validate(text, opt);
+        return AbstractScalar.SCALAR.string.ly_validate(text, opt);
     }
     docCast(target: unknown, property: PropertyKey, openApi: RecLike, opt?: _O): CastApiDocResponse {
-        return this._scalar.string.ly_apiDoc(target, property, openApi, {}, opt);
+        return AbstractScalar.SCALAR.string.ly_apiDoc(target, property, openApi, {}, opt);
     }
     /**
      * Generated uuid by version
@@ -55,3 +60,5 @@ export class UuidType extends AbstractScalar<_T, _O> implements UuidCast {
         return uuid.NIL;
     }
 }
+export const uuidType = new UuidType();
+export {uuid};

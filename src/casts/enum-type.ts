@@ -1,3 +1,4 @@
+import memoize from 'memoizee-decorator';
 import {Bind, Fqn} from "@leyyo/fqn";
 import {Key, leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse} from "@leyyo/cast";
@@ -13,11 +14,13 @@ type _O<T = Key> = EnumOpt<T & Key>;
 @Bind()
 export class EnumType extends AbstractScalar<Key, _O> implements EnumCast {
 
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         opt = leyyo.primitive.object(opt) as unknown as _O;
         return !!leyyo.primitive.enumeration(value, {...opt, silent: true});
     }
 
+    @memoize({})
     cast<T = Key>(value: unknown, opt?: _O): T {
         return leyyo.primitive.enumeration(value, opt) as unknown as T;
     }
@@ -26,3 +29,4 @@ export class EnumType extends AbstractScalar<Key, _O> implements EnumCast {
         return {type: 'string', 'enum': []};
     }
 }
+export const enumType = new EnumType();

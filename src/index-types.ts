@@ -311,7 +311,6 @@ export interface ScalarTestRec {
 // endregion test
 // region scalar
 export interface ScalarLike {
-    initialize(): void
     isEmpty(value: unknown): boolean;
     isPrimitive(value: unknown): boolean;
     isValue(value: unknown): boolean;

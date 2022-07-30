@@ -1,8 +1,11 @@
+// noinspection JSUnusedGlobalSymbols
+
+import memoize from 'memoizee-decorator';
 import {Bind, Fqn} from "@leyyo/fqn";
 import {leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse, castPool} from "@leyyo/cast";
 import {FQN_NAME} from "../internal-component";
-import {FloatAlias, FloatCast, FloatOpt, ScalarLike} from "../index-types";
+import {FloatAlias, FloatCast, FloatOpt} from "../index-types";
 import {AbstractScalar} from "../abstract-scalar";
 
 type _T = FloatAlias;
@@ -13,13 +16,15 @@ type _O = FloatOpt;
 @AssignCast('Float', 'Double')
 @Bind()
 export class FloatType extends AbstractScalar<_T, _O> implements FloatCast {
-    constructor(scalar: ScalarLike) {
-        super(scalar);
+    constructor() {
+        super();
         castPool.copy(this, Number);
     }
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         return leyyo.is.float(value);
     }
+    @memoize({})
     cast(value: unknown, opt?: _O): _T {
         return this.ly_validate(leyyo.primitive.float(value, opt), opt);
     }
@@ -60,3 +65,6 @@ export class FloatType extends AbstractScalar<_T, _O> implements FloatCast {
         return (value <= max);
     }
 }
+export const floatType = new FloatType();
+export const doubleType = floatType;
+export const numberType = floatType;

@@ -23,7 +23,6 @@ import {
     IntegerAlias,
     IntegerCast,
     IntegerOpt,
-    ObjectAlias,
     ObjectCast,
     ObjectOpt,
     ScalarLike,
@@ -40,6 +39,7 @@ import {
 import {COMPONENT_NAME, FQN_NAME} from "./internal-component";
 import {TimePart} from "./index-enums";
 import {
+    anyType,
     AnyType,
     ArrayType,
     BooleanType,
@@ -53,6 +53,7 @@ import {
     TextType,
     UuidType
 } from "./casts";
+import {AbstractScalar} from "./abstract-scalar";
 
 // noinspection JSUnusedLocalSymbols
 @Fqn(...FQN_NAME)
@@ -78,23 +79,22 @@ export class Scalar implements ScalarLike {
         leyyo.component.add(COMPONENT_NAME);
         leyyo.enumeration.add('TimePart', TimePart, ...FQN_NAME);
 
-        this._any = new AnyType(this);
-        this._array = new ArrayType(this) as ArrayCast;
-        this._boolean = new BooleanType(this);
-        this._date = new DateType(this);
-        this._enum = new EnumType(this) as EnumCast;
-        this._float = new FloatType(this);
-        this._func = new FunctionType(this) as FuncCast;
-        this._integer = new IntegerType(this);
-        this._object = new ObjectType(this) as ObjectCast;
-        this._string = new StringType(this);
-        this._text = new TextType(this);
-        this._uuid = new UuidType(this);
+        this._any = new AnyType();
+        this._array = new ArrayType() as ArrayCast;
+        this._boolean = new BooleanType();
+        this._date = new DateType();
+        this._enum = new EnumType() as EnumCast;
+        this._float = new FloatType();
+        this._func = new FunctionType() as FuncCast;
+        this._integer = new IntegerType();
+        this._object = new ObjectType() as ObjectCast;
+        this._string = new StringType();
+        this._text = new TextType();
+        this._uuid = new UuidType();
     }
     // endregion constructor
-    initialize(): void {}
     get any(): AnyCast {
-        return this._any;
+        return anyType;
     }
 
     get array(): ArrayCast {
@@ -249,7 +249,8 @@ export class Scalar implements ScalarLike {
         return this._uuid.cast(value, opt);
     }
 }
-
+export const scalar = new Scalar();
+AbstractScalar.SCALAR = scalar;
 /**
  *             const ext = /(?:\.([^.]+))?$/.exec(__filename) as unknown as string;
  *             const importList = [] as Array<Promise<unknown>>;

@@ -1,9 +1,11 @@
+import memoize from 'memoizee-decorator';
 import {Bind, Fqn} from "@leyyo/fqn";
 import {leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse} from "@leyyo/cast";
 import {FQN_NAME} from "../internal-component";
 import {AnyAlias, AnyCast, AnyOpt} from "../index-types";
 import {AbstractScalar} from "../abstract-scalar";
+import {scalar} from "../scalar";
 
 type _T = AnyAlias;
 type _O = AnyOpt;
@@ -12,9 +14,11 @@ type _O = AnyOpt;
 @AssignCast('Any', 'Unknown', 'Mixed')
 @Bind()
 export class AnyType extends AbstractScalar<_T, _O> implements AnyCast {
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         return leyyo.is.value(value);
     }
+    @memoize({})
     cast(value: unknown, opt?: _O): _T {
         return leyyo.primitive.any(value, opt);
     }
@@ -22,3 +26,4 @@ export class AnyType extends AbstractScalar<_T, _O> implements AnyCast {
         return {$ref: 'Any'};
     }
 }
+export const anyType = new AnyType();

@@ -1,3 +1,6 @@
+// noinspection JSUnusedGlobalSymbols
+
+import memoize from 'memoizee-decorator';
 import {Bind, Fqn} from "@leyyo/fqn";
 import {leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse} from "@leyyo/cast";
@@ -12,9 +15,11 @@ type _O = IntegerOpt;
 @AssignCast('Integer', 'Int')
 @Bind()
 export class IntegerType extends AbstractScalar<_T, _O> implements IntegerCast {
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         return leyyo.is.integer(value);
     }
+    @memoize({})
     cast(value: unknown, opt?: _O): _T {
         return this.ly_validate(leyyo.primitive.integer(value, opt), opt);
     }
@@ -47,3 +52,5 @@ export class IntegerType extends AbstractScalar<_T, _O> implements IntegerCast {
     }
 
 }
+export const integerType = new IntegerType();
+export const intType = integerType;

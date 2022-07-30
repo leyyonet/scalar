@@ -1,8 +1,11 @@
+// noinspection JSUnusedGlobalSymbols
+
+import memoize from 'memoizee-decorator';
 import {Bind, Fqn} from "@leyyo/fqn";
 import {leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse, castPool} from "@leyyo/cast";
 import {FQN_NAME} from "../internal-component";
-import {BooleanAlias, BooleanCast, BooleanOpt, ScalarLike} from "../index-types";
+import {BooleanAlias, BooleanCast, BooleanOpt} from "../index-types";
 import {AbstractScalar} from "../abstract-scalar";
 
 type _T = BooleanAlias;
@@ -12,11 +15,12 @@ type _O = BooleanOpt;
 @AssignCast('Bool')
 @Bind()
 export class BooleanType extends AbstractScalar<_T, _O> implements BooleanCast {
-    constructor(scalar: ScalarLike) {
-        super(scalar);
+    constructor() {
+        super();
         castPool.copy(this, Boolean);
     }
 
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         if (typeof value === 'boolean') {
             return true;
@@ -33,6 +37,7 @@ export class BooleanType extends AbstractScalar<_T, _O> implements BooleanCast {
         const text = (value as string).toLowerCase();
         return leyyo.primitive.BOOL_TRUE.includes(text) || leyyo.primitive.BOOL_FALSE.includes(text);
     }
+    @memoize({})
     cast(value: unknown, opt?: _O): _T {
         return leyyo.primitive.boolean(value, opt);
     }
@@ -56,5 +61,7 @@ export class BooleanType extends AbstractScalar<_T, _O> implements BooleanCast {
         if (value === false) {return 0;}
         return null;
     }
-
 }
+export const booleanType = new BooleanType();
+export const boolType = booleanType;
+

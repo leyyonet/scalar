@@ -1,3 +1,6 @@
+// noinspection JSUnusedGlobalSymbols
+
+import memoize from 'memoizee-decorator';
 import {Bind, Fqn} from "@leyyo/fqn";
 import {leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse} from "@leyyo/cast";
@@ -12,13 +15,16 @@ type _O = TextOpt;
 @AssignCast('Text')
 @Bind()
 export class TextType extends AbstractScalar<_T, _O> implements TextCast {
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         return leyyo.is.text(value);
     }
+    @memoize({})
     cast(value: unknown, opt?: _O): _T {
-        return this._scalar.string.ly_validate(leyyo.primitive.text(value, opt), opt);
+        return AbstractScalar.SCALAR.string.ly_validate(leyyo.primitive.text(value, opt), opt);
     }
     docCast(target: unknown, property: PropertyKey, openApi: RecLike, opt?: _O): CastApiDocResponse {
-        return this._scalar.string.ly_apiDoc(target, property, openApi, {}, opt);
+        return AbstractScalar.SCALAR.string.ly_apiDoc(target, property, openApi, {}, opt);
     }
 }
+export const textType = new TextType();

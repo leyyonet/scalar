@@ -10,10 +10,9 @@ import {ArrayOpt, ObjectOpt, ScalarItemCast, ScalarLike} from "./index-types";
 export abstract class AbstractScalar<T = unknown, O extends TypeOpt = TypeOpt> implements ScalarItemCast<T, O> {
     [x: string | number]: unknown;
 
-    protected readonly _scalar: ScalarLike;
+    static SCALAR: ScalarLike;
 
-    constructor(scalar: ScalarLike) {
-        this._scalar = scalar;
+    constructor() {
         fqn.refresh(this);
     }
 
@@ -24,20 +23,20 @@ export abstract class AbstractScalar<T = unknown, O extends TypeOpt = TypeOpt> i
     abstract docCast(target: unknown, property: PropertyKey, openApi: RecLike, opt?: O): CastApiDocResponse;
 
     isObjectOf(value: unknown, opt?: ObjectOpt & O): boolean {
-        return this._scalar.object.isEvery(value, this.is, opt);
+        return AbstractScalar.SCALAR.object.isEvery(value, this.is, opt);
     }
 
     castObjectOf<T2 = T>(value: unknown, opt?: ObjectOpt & O): RecLike<T2> {
         opt = (leyyo.primitive.object(opt) ?? {}) as O;
-        return this._scalar.object.cast(value, {...opt, children: {value: {fn: this.cast}}}) as RecLike<T2>;
+        return AbstractScalar.SCALAR.object.cast(value, {...opt, children: {value: {fn: this.cast}}}) as RecLike<T2>;
     }
 
     isArrayOf(value: unknown, opt?: ArrayOpt & O): boolean {
-        return this._scalar.array.isEvery(value, this.is, opt);
+        return AbstractScalar.SCALAR.array.isEvery(value, this.is, opt);
     }
 
     castArrayOf<T2 = T>(value: unknown, opt?: ArrayOpt & O): Array<T2> {
         opt = (leyyo.primitive.object(opt) ?? {}) as O;
-        return this._scalar.array.cast(value, {...opt, children: {value: {fn: this.cast}}}) as Array<T2>;
+        return AbstractScalar.SCALAR.array.cast(value, {...opt, children: {value: {fn: this.cast}}}) as Array<T2>;
     }
 }

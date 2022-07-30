@@ -1,28 +1,28 @@
+import memoize from 'memoizee-decorator';
 import {Bind, fqn, Fqn} from "@leyyo/fqn";
 import {DeveloperException, Key, leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse, CastIsLambda, castPool} from "@leyyo/cast";
 import {AssignGeneric, GenericInput, genericPool, GenericTreeLike} from "@leyyo/generics";
-import {ObjectCast, ObjectOpt, ScalarLike} from "../index-types";
+import {ObjectCast, ObjectOpt} from "../index-types";
 import {InvalidHashKeyException} from "../index-errors";
 import {FQN_NAME} from "../internal-component";
 import {AbstractScalar} from "../abstract-scalar";
 
 type _T = RecLike;
 type _O = ObjectOpt;
-// noinspection JSUnusedLocalSymbols
+
+// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
 @Fqn(...FQN_NAME)
 @AssignCast('Record')
 @AssignGeneric('Record')
 @Bind()
 export class ObjectType extends AbstractScalar<RecLike, _O> implements ObjectCast {
-    readonly minGen = 1;
-    readonly maxGen = 2;
-    constructor(scalar: ScalarLike) {
-        super(scalar);
+    constructor() {
+        super();
         castPool.copy(this, Object);
         genericPool.copy(this, Object);
     }
-    private _validate<T = unknown>(value: RecLike<T>, opt: _O): RecLike<T> {
+    private static _validate<T = unknown>(value: RecLike<T>, opt: _O): RecLike<T> {
         if (value && Object.keys(value).length > 0) {
             if (opt?.ignoreNullValues) {
                 const result = {} as RecLike<T>;
@@ -36,9 +36,11 @@ export class ObjectType extends AbstractScalar<RecLike, _O> implements ObjectCas
         }
         return (Object.keys(value).length > 0) ? value : null;
     }
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         return leyyo.is.object(value);
     }
+    @memoize({})
     cast<T = unknown>(value: unknown, opt?: _O): RecLike<T> {
         return leyyo.primitive.object(value, opt);
     }
@@ -79,7 +81,7 @@ export class ObjectType extends AbstractScalar<RecLike, _O> implements ObjectCas
                 index++;
             }
         }
-        return this._validate(result, opt);
+        return ObjectType._validate(result, opt);
     }
     docGen(target: unknown, property: PropertyKey, tree: GenericTreeLike, openApi: RecLike, opt?: _O): CastApiDocResponse {
         return {type: 'object', properties: {}};
@@ -102,13 +104,13 @@ export class ObjectType extends AbstractScalar<RecLike, _O> implements ObjectCas
         if (!leyyo.is.object(obj, true)) {
             return null;
         }
-        return this._scalar.array.first(Object.keys(obj));
+        return AbstractScalar.SCALAR.array.first(Object.keys(obj));
     }
     lastKey(obj: unknown): string {
         if (!leyyo.is.object(obj, true)) {
             return null;
         }
-        return this._scalar.array.last(Object.keys(obj));
+        return AbstractScalar.SCALAR.array.last(Object.keys(obj));
     }
     getWithPath(value: unknown, ...keys: Array<string | number>): unknown {
         if (!leyyo.is.object(value)) {
@@ -163,3 +165,4 @@ export class ObjectType extends AbstractScalar<RecLike, _O> implements ObjectCas
     // endregion custom
 
 }
+export const objectType = new ObjectType();

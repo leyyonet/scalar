@@ -1,3 +1,4 @@
+import memoize from 'memoizee-decorator';
 import {Bind, fqn, Fqn} from "@leyyo/fqn";
 import {ArraySome, Key, leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse, CastIsLambda, castPool} from "@leyyo/cast";
@@ -8,8 +9,7 @@ import {
     ArrayOpt,
     ScalarDuplicatedResult,
     ScalarFindIndex,
-    ScalarKeyLambda,
-    ScalarLike
+    ScalarKeyLambda
 } from "../index-types";
 import {AbstractScalar} from "../abstract-scalar";
 
@@ -22,8 +22,8 @@ type _O = ArrayOpt;
 export class ArrayType extends AbstractScalar<ArraySome, _O> implements ArrayCast {
     readonly minGen = 1;
     readonly maxGen = 1;
-    constructor(scalar: ScalarLike) {
-        super(scalar);
+    constructor() {
+        super();
         castPool.copy(this, Array);
         genericPool.copy(this, Array);
     }
@@ -43,9 +43,11 @@ export class ArrayType extends AbstractScalar<ArraySome, _O> implements ArrayCas
         }
         return value;
     }
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         return leyyo.is.array(value);
     }
+    @memoize({})
     cast<T = unknown>(value: unknown, opt?: _O): Array<T> {
         const result = ArrayType._withDelimiter<T>(value, opt);
         return this._validate(result, opt);
@@ -55,6 +57,7 @@ export class ArrayType extends AbstractScalar<ArraySome, _O> implements ArrayCas
         // return {type: 'array', items: {$ref: '#/components/schemas/Pet'}};
     }
 
+    @memoize({})
     gen<T = unknown>(clazz: GenericInput, value: unknown, opt?: _O): Array<T> {
         const tree = genericPool.toTree(clazz);
         if (tree.children.length < 1) {
@@ -264,3 +267,4 @@ export class ArrayType extends AbstractScalar<ArraySome, _O> implements ArrayCas
     }
     // endregion custom
 }
+export const arrayType = new ArrayType();

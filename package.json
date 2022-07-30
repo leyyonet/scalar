@@ -1,6 +1,6 @@
 {
   "name": "@leyyo/scalar",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Scalar types conversions for Javascript/Typescript",
   "keywords": [
     "scalar",
@@ -59,6 +59,7 @@
     "@leyyo/core": "^1.1.2",
     "@leyyo/fqn": "^1.1.1",
     "@leyyo/generics": "^1.1.1",
+    "memoizee-decorator": "^1.0.3",
     "moment": "^2.29.4",
     "uuid": "^8.3.2"
   }

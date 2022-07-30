@@ -1,3 +1,4 @@
+import memoize from 'memoizee-decorator';
 import {Bind, Fqn} from "@leyyo/fqn";
 import {leyyo, RecLike} from "@leyyo/core";
 import {AssignCast, CastApiDocResponse, castPool} from "@leyyo/cast";
@@ -14,10 +15,11 @@ type _O = DateOpt;
 @AssignCast()
 @Bind()
 export class DateType extends AbstractScalar<_T, _O> implements DateCast {
-    constructor(scalar: ScalarLike) {
-        super(scalar);
+    constructor() {
+        super();
         castPool.copy(this, Date);
     }
+    @memoize({})
     is(value: unknown, opt?: _O): boolean {
         if (leyyo.is.empty(value)) {return false;}
         if (value instanceof Date || value instanceof moment) {
@@ -29,6 +31,7 @@ export class DateType extends AbstractScalar<_T, _O> implements DateCast {
         return new Date(value as string).getTime() > 0;
     }
 
+    @memoize({})
     cast(value: unknown, opt?: _O): _T {
         return leyyo.primitive.date(value, opt);
     }
@@ -96,3 +99,4 @@ export class DateType extends AbstractScalar<_T, _O> implements DateCast {
     }
 
 }
+export const dateType = new DateType();
