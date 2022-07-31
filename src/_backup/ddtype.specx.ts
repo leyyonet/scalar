@@ -5,7 +5,7 @@ import {leyyo} from "../../../core";
 leyyo.base.lyyDebug(false);
 
 import { strict as assert } from 'assert';
-import {enumType} from "../enum/type";
+import {enumType} from "../instances/enum/type";
 
 enum ColorEnum {
     RED = 'red',

@@ -1,3 +1,3 @@
-import {sampleBoolean} from "../src/samples/boolean";
+import {sampleBoolean} from "../src/samples";
 
 sampleBoolean(describe, it);

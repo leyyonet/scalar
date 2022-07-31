@@ -2,8 +2,8 @@ import {fqn} from "@leyyo/fqn";
 import {describe, it, printDetailed} from "@leyyo/core";
 import {castPool} from "@leyyo/cast";
 import {genericPool} from "@leyyo/generics";
-import {scalar} from "./index";
-import {sampleBoolean} from "./samples/boolean";
+import {scalar} from "./base";
+import {sampleBoolean} from "./samples";
 
 
 printDetailed('scalar', fqn.report(scalar));

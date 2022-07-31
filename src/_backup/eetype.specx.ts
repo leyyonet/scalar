@@ -5,7 +5,7 @@ import {leyyo} from "../../../core";
 leyyo.base.lyyDebug(false);
 
 import { strict as assert } from 'assert';
-import {textType} from "../text/type";
+import {textType} from "../instances/text/type";
 
 describe('textType', () => {
     describe('#cast()', () => {
