@@ -1,10 +1,9 @@
 import {FuncLike, } from "@leyyo/core";
-import {ScalarTest} from "../testing/scalar-test";
-import {ScalarTestItem} from "../testing/index-types";
+import {ScalarTest, ScalarTestingItem} from "../testing";
 import {booleanType} from "../instances";
 
 export function sampleBoolean(describe: FuncLike, it: FuncLike): void {
-    const items: Array<ScalarTestItem> = [];
+    const items: Array<ScalarTestingItem> = [];
     // region basic
     items.push({
         info: '[if input is undefined] undefined should be converted to null',
