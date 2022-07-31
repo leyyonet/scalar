@@ -4,12 +4,12 @@ import {fqn} from "@leyyo/fqn";
 import {CallbackBase} from "@leyyo/callback";
 import {castPool} from "@leyyo/cast";
 import {genericPool} from "@leyyo/generics";
-import {ScalarTestItem, ScalarTestRec} from "./index-types";
 import {arrayType, objectType} from "../instances";
+import {ScalarTestingItem, ScalarTestingRec} from "./index-types";
 
 // noinspection JSUnusedGlobalSymbols
 export class ScalarTest {
-    protected static _equal(rec: ScalarTestRec, item: ScalarTestItem, title: string, fn: FuncLike) {
+    protected static _equal(rec: ScalarTestingRec, item: ScalarTestingItem, title: string, fn: FuncLike) {
         rec.it(title, () => {
             if (item.error) {
                 assert.throws(() => fn());
@@ -18,22 +18,22 @@ export class ScalarTest {
             }
         });
     }
-    protected static _is(rec: ScalarTestRec, item: ScalarTestItem, title: string) {
+    protected static _is(rec: ScalarTestingRec, item: ScalarTestingItem, title: string) {
         rec.it(title, () => {
             assert.deepEqual(rec.cast.is(item.input, item.opt), item.expected);
         });
     }
-    protected static _isArrayOf(rec: ScalarTestRec, item: ScalarTestItem, title: string) {
+    protected static _isArrayOf(rec: ScalarTestingRec, item: ScalarTestingItem, title: string) {
         rec.it(title, () => {
             assert.deepEqual(rec.cast.isArrayOf(item.input, item.opt), item.expected);
         });
     }
-    protected static _isObjectOf(rec: ScalarTestRec, item: ScalarTestItem, title: string) {
+    protected static _isObjectOf(rec: ScalarTestingRec, item: ScalarTestingItem, title: string) {
         rec.it(title, () => {
             assert.deepEqual(rec.cast.isObjectOf(item.input, item.opt), item.expected);
         });
     }
-    static basic(rec: ScalarTestRec, base: CallbackBase, item: ScalarTestItem): void {
+    static basic(rec: ScalarTestingRec, base: CallbackBase, item: ScalarTestingItem): void {
         rec.describe(item.info, () => {
             if (item.is) {
                 this._is(rec, item, 'method: is');
@@ -52,7 +52,7 @@ export class ScalarTest {
             }
         });
     }
-    static array(rec: ScalarTestRec, base: CallbackBase, item: ScalarTestItem): void {
+    static array(rec: ScalarTestingRec, base: CallbackBase, item: ScalarTestingItem): void {
         rec.describe(item.info, () => {
             if (item.is) {
                 this._isArrayOf(rec, item, 'method: isArrayOf');
@@ -81,7 +81,7 @@ export class ScalarTest {
             }
         });
     }
-    static object(rec: ScalarTestRec, base: CallbackBase, item: ScalarTestItem): void {
+    static object(rec: ScalarTestingRec, base: CallbackBase, item: ScalarTestingItem): void {
         const keyName = item.objectKey ? fqn.name(item.objectKey) : 'string';
         rec.describe(item.info, () => {
             if (item.is) {
@@ -104,7 +104,7 @@ export class ScalarTest {
             }
         });
     }
-    static run(rec: ScalarTestRec): void {
+    static run(rec: ScalarTestingRec): void {
         const base = castPool.get(rec.cast);
         rec.describe(base.basic, () => {
             rec.items.forEach(item => {

@@ -1,4 +1,4 @@
 export * from './base';
 export * from './instances';
+export * from './testing';
 export * from './index-errors';
-export * from './base/index-types';

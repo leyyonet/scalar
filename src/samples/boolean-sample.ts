@@ -1,6 +1,6 @@
 import {FuncLike, } from "@leyyo/core";
-import {ScalarTest} from "./scalar-test";
-import {ScalarTestItem} from "./index-types";
+import {ScalarTest} from "../testing/scalar-test";
+import {ScalarTestItem} from "../testing/index-types";
 import {booleanType} from "../instances";
 
 export function sampleBoolean(describe: FuncLike, it: FuncLike): void {

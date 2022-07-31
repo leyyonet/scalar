@@ -1,10 +1,10 @@
 import {FuncLike, RecLike} from "@leyyo/core";
 import {ScalarItemCast} from "../instances";
 
-export type ScalarTestType = 'basic'|'array'|'object';
-export interface ScalarTestItem extends RecLike {
+export type ScalarTestingType = 'basic'|'array'|'object';
+export interface ScalarTestingItem extends RecLike {
     info: string;
-    type: ScalarTestType;
+    type: ScalarTestingType;
     input: unknown;
     expected?: unknown;
     is?: boolean;
@@ -12,10 +12,10 @@ export interface ScalarTestItem extends RecLike {
     opt?: RecLike;
     objectKey?: FuncLike;
 }
-export interface ScalarTestRec {
+export interface ScalarTestingRec {
     describe: FuncLike;
     it: FuncLike;
     cast: ScalarItemCast;
     native?: FuncLike;
-    items: Array<ScalarTestItem>;
+    items: Array<ScalarTestingItem>;
 }

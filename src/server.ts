@@ -3,7 +3,7 @@ import {describe, it, printDetailed} from "@leyyo/core";
 import {castPool} from "@leyyo/cast";
 import {genericPool} from "@leyyo/generics";
 import {scalar} from "./base";
-import {sampleBoolean} from "./samples";
+import {sampleBoolean} from "./testing";
 
 
 printDetailed('scalar', fqn.report(scalar));
