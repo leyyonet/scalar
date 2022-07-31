@@ -218,7 +218,7 @@ export class Scalar implements ScalarLike {
     // endregion uuid
 }
 export const scalar = new Scalar();
-AbstractScalar.SCALAR = scalar;
+AbstractScalar._scalar = scalar;
 /**
  *             const ext = /(?:\.([^.]+))?$/.exec(__filename) as unknown as string;
  *             const importList = [] as Array<Promise<unknown>>;

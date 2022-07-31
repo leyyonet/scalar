@@ -104,13 +104,13 @@ export class ObjectType extends AbstractScalar<RecLike, _O> implements ObjectCas
         if (!leyyo.is.object(obj, true)) {
             return null;
         }
-        return AbstractScalar.SCALAR.array.first(Object.keys(obj));
+        return AbstractScalar._scalar.array.first(Object.keys(obj));
     }
     lastKey(obj: unknown): string {
         if (!leyyo.is.object(obj, true)) {
             return null;
         }
-        return AbstractScalar.SCALAR.array.last(Object.keys(obj));
+        return AbstractScalar._scalar.array.last(Object.keys(obj));
     }
     getWithPath(value: unknown, ...keys: Array<string | number>): unknown {
         if (!leyyo.is.object(value)) {

@@ -21,10 +21,10 @@ export class TextType extends AbstractScalar<_T, _O> implements TextCast {
     }
     @memoize({})
     cast(value: unknown, opt?: _O): _T {
-        return AbstractScalar.SCALAR.string.ly_validate(leyyo.primitive.text(value, opt), opt);
+        return AbstractScalar._scalar.string.ly_validate(leyyo.primitive.text(value, opt), opt);
     }
     docCast(target: unknown, property: PropertyKey, openApi: RecLike, opt?: _O): CastApiDocResponse {
-        return AbstractScalar.SCALAR.string.ly_apiDoc(target, property, openApi, {}, opt);
+        return AbstractScalar._scalar.string.ly_apiDoc(target, property, openApi, {}, opt);
     }
 }
 export const textType = new TextType();

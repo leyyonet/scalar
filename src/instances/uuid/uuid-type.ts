@@ -27,10 +27,10 @@ export class UuidType extends AbstractScalar<_T, _O> implements UuidCast {
         if (text && !uuid.validate(text)) {
             new DeveloperException('scalar.invalid-uuid', {field: opt?.field}).with(this).raise(!opt?.silent);
         }
-        return AbstractScalar.SCALAR.string.ly_validate(text, opt);
+        return AbstractScalar._scalar.string.ly_validate(text, opt);
     }
     docCast(target: unknown, property: PropertyKey, openApi: RecLike, opt?: _O): CastApiDocResponse {
-        return AbstractScalar.SCALAR.string.ly_apiDoc(target, property, openApi, {}, opt);
+        return AbstractScalar._scalar.string.ly_apiDoc(target, property, openApi, {}, opt);
     }
     /**
      * Generated uuid by version

@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import {FuncLike, RecLike, TypeOpt} from "@leyyo/core";
 import {ArrayOpt} from "../array";
 import {ObjectOpt} from "../object";

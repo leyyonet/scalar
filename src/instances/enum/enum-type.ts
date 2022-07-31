@@ -8,7 +8,6 @@ import {FQN_NAME} from "../../internal-component";
 import {AbstractScalar} from "../abstract";
 import {EnumCast, EnumOpt} from "./index-types";
 
-type _T<T = Key> = T;
 type _O<T = Key> = EnumOpt<T & Key>;
 // noinspection JSUnusedLocalSymbols
 @Fqn(...FQN_NAME)
