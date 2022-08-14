@@ -34,7 +34,7 @@ import {
     UuidAlias,
     UuidCast,
     UuidOpt
-} from "../instances";
+} from "../components";
 
 export interface ScalarLike {
     // region global

@@ -4,7 +4,7 @@ import {fqn} from "@leyyo/fqn";
 import {CallbackBase} from "@leyyo/callback";
 import {castPool} from "@leyyo/cast";
 import {genericPool} from "@leyyo/generics";
-import {arrayType, objectType} from "../instances";
+import {arrayType, objectType} from "../components";
 import {ScalarTestingItem, ScalarTestingRec} from "./index-types";
 
 // noinspection JSUnusedGlobalSymbols
@@ -41,7 +41,7 @@ export class ScalarTest {
             else {
                 this._equal(rec, item, 'method: cast', () => rec.cast.cast(item.input, item.opt));
                 this._equal(rec, item, 'method: direct', () => castPool.run(rec.cast, item.input, item.opt));
-                this._equal(rec, item, `instance: '${fqn.name(rec.cast)}`, () => castPool.run(fqn.name(rec.cast), item.input, item.opt));
+                this._equal(rec, item, `instance: ${fqn.name(rec.cast)}`, () => castPool.run(fqn.name(rec.cast), item.input, item.opt));
                 this._equal(rec, item, `full: ${base.basic}`, () => castPool.run(base.basic, item.input, item.opt));
                 if (base.full) {
                     this._equal(rec, item, `full: ${base.full}`, () => castPool.run(base.full, item.input, item.opt));

@@ -4,7 +4,6 @@ import {FuncLike, Key, leyyo, RecLike} from "@leyyo/core";
 import {Bind, Fqn} from "@leyyo/fqn";
 import {COMPONENT_NAME, FQN_NAME} from "../internal-component";
 import {
-    AbstractScalar,
     AnyCast,
     anyType,
     ArrayCast,
@@ -48,8 +47,9 @@ import {
     UuidCast,
     UuidOpt,
     uuidType
-} from "../instances";
+} from "../components";
 import {ScalarLike} from "./index-types";
+import {AbstractScalar} from "../abstract";
 
 // noinspection JSUnusedLocalSymbols
 @Fqn(...FQN_NAME)

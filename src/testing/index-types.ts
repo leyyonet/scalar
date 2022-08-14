@@ -1,5 +1,5 @@
 import {FuncLike, RecLike} from "@leyyo/core";
-import {ScalarItemCast} from "../instances";
+import {ScalarItemCast} from "../abstract";
 
 export type ScalarTestingType = 'basic'|'array'|'object';
 export interface ScalarTestingItem extends RecLike {
