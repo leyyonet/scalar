@@ -1,44 +1,42 @@
-import {Bind, fqn, Fqn} from "@leyyo/fqn";
-import {leyyo, RecLike, TypeOpt} from "@leyyo/core";
-import {CastApiDocResponse} from "@leyyo/cast";
-import {FQN_NAME} from "../internal-component";
-import {ScalarLike} from "../base";
-import {ArrayOpt, ObjectOpt} from "../components";
-import {ScalarItemCast} from "./index-types";
+import {
+    ApiSchemaLike,
+    Bind,
+    CastDocIn,
+    CastOption,
+    FieldType,
+    Fqn,
+    leyyo,
+    LoggerLike, PropertyReflectLike,
+    RecLike
+} from "@leyyo/core";
+import {LY_INT_FQN} from "../internal";
+import {ScalarItemCast,} from "./index.type";
 
 // noinspection JSUnusedLocalSymbols
-@Fqn(...FQN_NAME)
+@Fqn(...LY_INT_FQN)
 @Bind()
-export abstract class AbstractScalar<T = unknown, O extends TypeOpt = TypeOpt> implements ScalarItemCast<T, O> {
+export abstract class AbstractScalar<T = unknown, O extends CastOption = CastOption> implements ScalarItemCast<T, O> {
     [x: string | number]: unknown;
+    protected LOG: LoggerLike;
+    protected _castDoc: ApiSchemaLike = {
+        type: FieldType.STRING
+    };
 
-    static _scalar: ScalarLike;
-
-    constructor() {
-        fqn.refresh(this);
+    protected constructor() {
+        this.LOG = leyyo.logger.assign(this);
+        leyyo.binder.bindAll(this);
     }
-
-    abstract is(value: unknown, opt?: O): boolean;
-
     abstract cast(value: unknown, opt?: O): T;
 
-    abstract docCast(target: unknown, property: PropertyKey, openApi: RecLike, opt?: O): CastApiDocResponse;
-
-    isObjectOf(value: unknown, opt?: ObjectOpt & O): boolean {
-        return AbstractScalar._scalar.object.isEvery(value, this.is, opt);
+    $castDoc?(ref: PropertyReflectLike, openApi: CastDocIn): unknown {
+        return this._castDoc;
     }
 
-    castObjectOf<T2 = T>(value: unknown, opt?: ObjectOpt & O): RecLike<T2> {
-        opt = (leyyo.primitive.object(opt) ?? {}) as O;
-        return AbstractScalar._scalar.object.cast(value, {...opt, children: {value: {fn: this.cast}}}) as RecLike<T2>;
+    castObjectOf(value: unknown | RecLike<T>, opt?: O): RecLike<T> {
+        return leyyo.primitive.object(value, this.cast) as RecLike<T>;
     }
 
-    isArrayOf(value: unknown, opt?: ArrayOpt & O): boolean {
-        return AbstractScalar._scalar.array.isEvery(value, this.is, opt);
-    }
-
-    castArrayOf<T2 = T>(value: unknown, opt?: ArrayOpt & O): Array<T2> {
-        opt = (leyyo.primitive.object(opt) ?? {}) as O;
-        return AbstractScalar._scalar.array.cast(value, {...opt, children: {value: {fn: this.cast}}}) as Array<T2>;
+    castArrayOf(value: unknown | Array<T>, opt?: O): Array<T> {
+        return leyyo.primitive.array(value, this.cast) as Array<T>;
     }
 }

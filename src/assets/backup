@@ -178,3 +178,16 @@
 //     return typeof str === 'string' && ScalarHelper._HTML_PATTERN.test(str);
 // }
 // endregion validations
+
+/**
+ *             const ext = /(?:\.([^.]+))?$/.exec(__filename) as unknown as string;
+ *             const importList = [] as Array<Promise<unknown>>;
+ *             fs.readdirSync(__dirname + '/casts').forEach(file => {
+ *                 if (file.endsWith(ext)) {
+ *                     importList.push(require(file));
+ *                 }
+ *             });
+ *             if (importList.length > 0) {
+ *                 Promise.all(importList).then();
+ *             }
+ * */
