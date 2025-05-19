@@ -1,0 +1,25 @@
+import { strict as assert } from 'assert';
+import {castPool} from "@leyyo/cast";
+import {booleanType} from "../src";
+import {InvalidValueException} from "@leyyo/common";
+
+describe('anyType', () => {
+    it('undefined ==> null', () => {
+        assert.deepEqual(castPool.run('any', undefined), null);
+    });
+    it('zero division', () => {
+        expect(() => anyType.cast(1/0)).toThrow(InvalidValueException);
+    });
+    it('empty string', () => {
+        assert.deepEqual(anyType.cast(' '), ' ');
+    });
+    it('string', () => {
+        assert.deepEqual(anyType.cast(' foo '), ' foo ');
+    });
+    it('function() ==> value', () => {
+        assert.deepEqual(anyType.cast(() => 'foo '), 'foo ');
+    });
+    it('symbol value', () => {
+        expect(() => anyType.cast(Symbol.for("invalid"))).toThrow(InvalidValueException);
+    });
+});
