@@ -1,2 +1,2 @@
-export const FQN_PCK = 'leyyo.scalar';
+export const FQN = 'leyyo.scalar';
 

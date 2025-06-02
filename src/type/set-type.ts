@@ -1,11 +1,19 @@
 import {Bind, Fqn} from "@leyyo/core";
-import {AssignGenerics, CastApiDocResponse, CastPointer, castPool, CastPriority} from "@leyyo/cast";
-import {FQN_PCK} from "../internal";
-import {$to, Arr, Dict, List} from "@leyyo/common";
+import {
+    CastGenerics,
+    CastClass,
+    CastDocCallback,
+    CastDocResponse,
+    castHub,
+    CastPriority
+} from "@leyyo/cast";
+import {FQN} from "../internal";
+import {$is, $to, Arr, List} from "@leyyo/common";
 import {AnyType} from "./any-type";
 
-@Fqn(FQN_PCK)
-@AssignGenerics(0, 1, 'Set')
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastGenerics(0, 1)
 @Bind('static')
 export class SetType {
 
@@ -15,7 +23,11 @@ export class SetType {
         any: 99,
     } as CastPriority;
 
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
+        return $is.arrayLike(value);
+    }
+
+    static exact(value: unknown): boolean {
         return value instanceof Set;
     }
 
@@ -23,26 +35,32 @@ export class SetType {
         return $to.set(value);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'array', items: {type: 'string'}};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'array', items: {}, uniqueItems: true});
     }
 
-    static castGen(children: Array<CastPointer>, value: unknown): Arr {
+    static castGen(children: Array<CastClass>, value: unknown): Arr {
         this._checkChildren(children);
-        return $to.array(value, undefined, children[0].cast);
+        const valueFn = children[0].cast;
+        return $to.array(value, undefined, valueFn);
     }
 
-    static docGen(children: Array<CastPointer>, target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
+    static docGen(children: Array<CastClass>, openApi: CastDocCallback): CastDocResponse {
         this._checkChildren(children);
-        return {type: 'array', items: children[0].doc(target, property, openApi)};
+        const valueFn = children[0].doc;
+        return openApi(this, {type: 'array', items: valueFn(openApi), uniqueItems: true});
     }
 
-    private static _checkChildren(children: Array<CastPointer>): void {
+    private static _checkChildren(children: Array<CastClass>): void {
         if (children.length < 1) {
             children.push(AnyType);
         }
     }
 
+    static {
+        castHub.pending.addClone(SetType, Set);
+    }
+
 }
 
-castPool.copy(SetType, Set);
+

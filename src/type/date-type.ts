@@ -1,12 +1,13 @@
 import moment from "moment";
-import {AssignType, CastApiDocResponse, castPool, CastPriority} from "@leyyo/cast";
+import {CastBasic, CastAlias, CastDocCallback, CastDocResponse, castHub, CastPriority} from "@leyyo/cast";
 import {Bind, Fqn} from "@leyyo/core";
-import {$is, $to, Dict} from "@leyyo/common";
-import {FQN_PCK} from "../internal";
+import {$is, $to} from "@leyyo/common";
+import {FQN} from "../internal";
 
-// noinspection JSUnusedLocalSymbols
-@Fqn(FQN_PCK)
-@AssignType('Datetime')
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastBasic()
+@CastAlias('Datetime')
 @Bind('static')
 export class DateType {
     static readonly priority = {
@@ -17,7 +18,7 @@ export class DateType {
         any: 99,
     } as CastPriority;
 
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
         if ($is.empty(value)) {
             return false;
         }
@@ -33,17 +34,26 @@ export class DateType {
         return false;
     }
 
+    static exact(value: unknown): boolean {
+        return value instanceof Date;
+    }
+
     static cast(value: unknown): Date {
         return $to.date(value);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'string', format: 'date-time'};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'string', format: 'date-time'});
+    }
+
+    static {
+        castHub.pending.addClone(DateType, Date);
     }
 
 }
 
-castPool.copy(DateType, Date);
-
+// noinspection JSUnusedGlobalSymbols
 export type Moment = moment.Moment;
+export const Datetime = DateType;
 export {moment};
+

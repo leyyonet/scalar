@@ -1,11 +1,11 @@
 import {Arr, ClassLike, KeyValue} from "@leyyo/common";
 import {CastIsLambda} from "@leyyo/cast";
-import {ArrayUtilsLike, ScalarKeyLambda} from "./index-type";
+import {ArrayUtilsLike, ScalarKeyLambda} from "./index.types";
 import {Fqn} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
-import {ClassHashLambda, classSigner, ClassSortLambda} from "../class-signer";
+import {FQN} from "../internal";
+import {ClassHashLambda, classSigner, ClassSortLambda} from "../sign";
 
-@Fqn(FQN_PCK)
+@Fqn(FQN)
 class ArrayUtils implements ArrayUtilsLike {
 
     // region custom
@@ -22,11 +22,11 @@ class ArrayUtils implements ArrayUtilsLike {
     }
 
     includes<T = unknown>(arr: Array<T>, seeds: Array<T>, fn?: ClassLike | ClassHashLambda<T>): boolean {
-        if (!this.isFilled(arr) || this.isFilled(seeds)) {
+        if ( !this.isFilled(arr) || this.isFilled(seeds)) {
             return false;
         }
         const fn2 = fn ? classSigner.getHash(fn) : undefined;
-        if (!fn2) {
+        if ( !fn2) {
             return seeds.some(seed => (arr as Array<T>).includes(seed as T));
         }
         const arrHash = arr.map(item => fn2(item));
@@ -35,11 +35,11 @@ class ArrayUtils implements ArrayUtilsLike {
     }
 
     includesEvery<T = unknown>(arr: Array<T>, seeds: Array<T>, fn?: ClassLike | ClassHashLambda<T>): boolean {
-        if (!this.isFilled(arr) || this.isFilled(seeds)) {
+        if ( !this.isFilled(arr) || this.isFilled(seeds)) {
             return false;
         }
         const fn2 = fn ? classSigner.getHash(fn) : undefined;
-        if (!fn2) {
+        if ( !fn2) {
             return seeds.every(seed => (arr as Array<T>).includes(seed as T));
         }
         const arrHash = arr.map(item => fn2(item));
@@ -48,21 +48,21 @@ class ArrayUtils implements ArrayUtilsLike {
     }
 
     first<T = unknown>(values: Array<T>): T {
-        if (!this.isFilled(values)) {
+        if ( !this.isFilled(values)) {
             return null;
         }
         return (values[0] !== undefined) ? values[0] : null;
     }
 
     last<T = unknown>(values: Array<T>): T {
-        if (!this.isFilled(values)) {
+        if ( !this.isFilled(values)) {
             return null;
         }
         return (values[values.length - 1] !== undefined) ? values[values.length - 1] : null;
     }
 
     shuffle<T = unknown>(values: Array<T>): Array<T> {
-        if (!this.isFilled(values)) {
+        if ( !this.isFilled(values)) {
             return [];
         }
         for (let i = values.length - 1; i > 0; i--) {
@@ -77,11 +77,11 @@ class ArrayUtils implements ArrayUtilsLike {
     }
 
     intersection<T = unknown>(source: Array<T>, target: Array<T>, fn?: ClassLike | ClassHashLambda<T>): Array<T> {
-        if (!this.isFilled(source) || this.isFilled(target)) {
+        if ( !this.isFilled(source) || this.isFilled(target)) {
             return [];
         }
         const fn2 = fn ? classSigner.getHash(fn) : undefined;
-        if (!fn2) {
+        if ( !fn2) {
             return source.filter(value => target.includes(value));
         }
         const targetHash = target.map(item => fn2(item));
@@ -89,14 +89,14 @@ class ArrayUtils implements ArrayUtilsLike {
     }
 
     difference<T = unknown>(source: Array<T>, target: Array<T>, fn?: ClassLike | ClassHashLambda<T>): Array<T> {
-        if (!this.isFilled(source)) {
+        if ( !this.isFilled(source)) {
             return [];
         }
-        if (!this.isFilled(target)) {
+        if ( !this.isFilled(target)) {
             return source;
         }
         const fn2 = fn ? classSigner.getHash(fn) : undefined;
-        if (!fn2) {
+        if ( !fn2) {
             return source.filter(value => !target.includes(value));
         }
         const targetHash = target.map(item => fn2(item));
@@ -106,7 +106,7 @@ class ArrayUtils implements ArrayUtilsLike {
     union<T = unknown>(arrays: Array<Array<T>>, fn?: ClassLike | ClassHashLambda<T>): Array<T> {
         const list: Array<T> = [];
         const fn2 = fn ? classSigner.getHash(fn) : undefined;
-        if (!fn2) {
+        if ( !fn2) {
             arrays.forEach(array => {
                 if (this.isFilled(array)) {
                     list.push(...array.filter(value => !list.includes(value)));
@@ -118,7 +118,7 @@ class ArrayUtils implements ArrayUtilsLike {
             if (this.isFilled(array)) {
                 array.forEach(item => {
                     const hash = fn2(item);
-                    if (!list.some(value => fn2(value) === hash)) {
+                    if ( !list.some(value => fn2(value) === hash)) {
                         list.push(item);
                     }
                 })
@@ -128,7 +128,7 @@ class ArrayUtils implements ArrayUtilsLike {
     }
 
     isDuplicated<T = unknown>(values: Array<T>, fn?: ClassLike | ClassHashLambda<T>): boolean {
-        if (!this.isFilled(values)) {
+        if ( !this.isFilled(values)) {
             return false;
         }
         return this.unique(values, fn).length !== values.length;
@@ -136,11 +136,11 @@ class ArrayUtils implements ArrayUtilsLike {
 
     // Unique
     unique<T = unknown>(arr: Array<T>, fn?: ClassLike | ClassHashLambda<T>): Array<T> {
-        if (!this.isFilled(arr)) {
+        if ( !this.isFilled(arr)) {
             return arr ? arr : [];
         }
         const fn2 = fn ? classSigner.getHash(fn) : undefined;
-        if (!fn2) {
+        if ( !fn2) {
             return arr.filter((item, index) => arr.indexOf(item) === index);
         }
         return arr.filter((item, index) => {
@@ -151,11 +151,11 @@ class ArrayUtils implements ArrayUtilsLike {
 
     // Sort
     sort<T = unknown>(arr: Array<T>, compareFn?: ClassLike | ClassSortLambda<T>): Array<T> {
-        if (!this.isFilled(arr)) {
+        if ( !this.isFilled(arr)) {
             return arr ? arr : [];
         }
         const fn2 = compareFn ? classSigner.getSort(compareFn) : undefined;
-        if (!fn2) {
+        if ( !fn2) {
             arr.sort();
             return arr;
         }
@@ -191,12 +191,12 @@ class ArrayUtils implements ArrayUtilsLike {
 
     // RemoveItems
     remove<T = unknown>(arr: Array<T>, deleted: Array<T>, fn?: ClassLike | ClassHashLambda<T>): number {
-        if (!this.isFilled(arr) || !this.isFilled(deleted)) {
+        if ( !this.isFilled(arr) || !this.isFilled(deleted)) {
             return 0;
         }
         let removed = 0;
         const fn2 = fn ? classSigner.getHash(fn) : undefined;
-        if (!fn2) {
+        if ( !fn2) {
             deleted.forEach(item => {
                 const index = arr.indexOf(item);
                 if (index >= 0) {
@@ -219,7 +219,7 @@ class ArrayUtils implements ArrayUtilsLike {
 
     // CropSize
     crop<T = unknown>(arr: Array<T>, max: number): Array<T> {
-        if (!this.isFilled(arr)) {
+        if ( !this.isFilled(arr)) {
             return arr;
         }
         if (arr.length <= max) {

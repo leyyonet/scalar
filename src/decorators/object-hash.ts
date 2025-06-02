@@ -1,7 +1,7 @@
 import {bindHandler, decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 import {$assert, $dev, $is, Dict} from "@leyyo/common";
-import {ClassHashLambda, classSigner, ClassSortLambda} from "../class-signer";
+import {ClassHashLambda, classSigner, ClassSortLambda} from "../sign";
 
 export function ObjectHash(fn: ClassHashLambda, useForAlsoSort?: boolean): ClassDecorator;
 export function ObjectHash(property: string, useForAlsoSort?: boolean): ClassDecorator;
@@ -23,7 +23,7 @@ interface P {
 }
 
 const deco = decoratorPool.newId<O, Dict, P>(ObjectHash)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class')
     .rules('no-multiple', 'no-inherited')
     .processor((ins, p: P) => {
@@ -35,15 +35,18 @@ const deco = decoratorPool.newId<O, Dict, P>(ObjectHash)
             opt.property = p.fnOrProperty;
             if (typeof creator?.prototype[opt.property] === 'function') {
                 opt.fn = creator?.prototype[opt.property] as ClassHashLambda;
-            } else if (typeof creator[opt.property] === 'function') {
+            }
+            else if (typeof creator[opt.property] === 'function') {
                 opt.fn = creator[opt.property] as ClassHashLambda;
-            } else {
+            }
+            else {
                 throw $dev.invalidError({issue: 'property.not.found', desc: ins.description, property: opt.property});
             }
-            if (!bindHandler.isBound(opt.fn)) {
+            if ( !bindHandler.isBound(opt.fn)) {
                 throw $dev.developerError({issue: 'method.not.bound', desc: ins.description, property: opt.property});
             }
-        } else {
+        }
+        else {
             opt.fn = p.fnOrProperty;
             $assert.func(opt.fn, () => $dev.desc(ins, {field: 'fn'}));
         }
@@ -60,14 +63,16 @@ const deco = decoratorPool.newId<O, Dict, P>(ObjectHash)
                             return 0; // first equals to second
                         }
                         return -1; // first less than second
-                    } else if ($is.empty(second)) {
+                    }
+                    else if ($is.empty(second)) {
                         return 1; // first greater than second
                     }
                     const firstHash = opt.fn(first);
                     const secondHash = opt.fn(second);
                     if (firstHash > secondHash) {
                         return 1; // first greater than second
-                    } else if (firstHash < secondHash) {
+                    }
+                    else if (firstHash < secondHash) {
                         return -1; // first less than second
                     }
                     return 0; // first equals to second

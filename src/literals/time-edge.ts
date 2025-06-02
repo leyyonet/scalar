@@ -1,5 +1,5 @@
 import {fqnHandler} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 
 /**
  * Time part items
@@ -11,4 +11,4 @@ export const TimeEdgeItems = ['start-of', 'end-of'] as const;
  * */
 export type TimeEdge = typeof TimeEdgeItems[number];
 
-fqnHandler.literal('TimeEdge', TimeEdgeItems, FQN_PCK);
+fqnHandler.literal('TimeEdge', TimeEdgeItems, FQN);

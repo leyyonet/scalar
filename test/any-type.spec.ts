@@ -1,28 +1,26 @@
 import {describe, expect, test} from '@jest/globals';
 
-import { strict as assert } from 'assert';
-import {castPool} from "@leyyo/cast";
-import {anyType} from "../src";
-import {InvalidValueException} from "@leyyo/common";
+import {AnyType} from "../src";
+import {InvalidValueError} from "@leyyo/common";
 
 describe('anyType', () => {
     test('undefined ==> null', () => {
-        expect(castPool.run('any', undefined)).toBe(null);
+        expect(AnyType.cast(undefined)).toBe(undefined);
     });
     test('zero division', () => {
-        expect(() => anyType.cast(1/0)).toThrow(InvalidValueException);
+        expect(() => AnyType.cast(1/0)).toThrow(InvalidValueError);
     });
     test('empty string', () => {
-        expect(anyType.cast(' ')).toBe(' ');
+        expect(AnyType.cast(' ')).toBe(' ');
     });
     test('string', () => {
-        expect(anyType.cast(' foo ')).toBe(' foo ');
+        expect(AnyType.cast(' foo ')).toBe(' foo ');
     });
     test('function() ==> value', () => {
-        expect(anyType.cast(() => 'foo ')).toBe('foo ');
+        expect(AnyType.cast(() => 'foo ')).toBe('foo ');
     });
     test('symbol value', () => {
-        expect(() => anyType.cast(Symbol.for("invalid"))).toThrow(InvalidValueException);
+        expect(() => AnyType.cast(Symbol.for("invalid"))).toThrow(InvalidValueError);
     });
 });
 

@@ -1,12 +1,14 @@
-import {AssignGenerics, CastApiDocResponse, CastPointer, CastPriority} from "@leyyo/cast";
-import {$is, $to, Dict} from "@leyyo/common";
+import {CastGenerics, CastAlias, CastClass, CastDocCallback, CastDocResponse, CastPriority} from "@leyyo/cast";
+import {$is, $to} from "@leyyo/common";
 import {Bind, Fqn} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 import {TextType} from "./text-type";
+import {AnyType} from "./any-type";
 
-// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
-@Fqn(FQN_PCK)
-@AssignGenerics(1, 1, 'Dict')
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastGenerics(1, 1)
+@CastAlias('Dict')
 @Bind('static')
 export class DictType {
 
@@ -15,7 +17,11 @@ export class DictType {
         instance: [[Map, 3]],
     } as CastPriority;
 
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
+        return $is.object(value);
+    }
+
+    static exact(value: unknown): boolean {
         return $is.bareObject(value);
     }
 
@@ -23,30 +29,32 @@ export class DictType {
         return $to.dict(value);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'object', properties: {}};
-        // return {type: 'array', items: {$ref: '#/components/schemas/Pet'}};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'object', additionalProperties: true});
     }
 
-    static castGen(children: Array<CastPointer>, value: unknown): Record<string, any> {
+    static castGen(children: Array<CastClass>, value: unknown): Record<string, any> {
         if ($is.empty(value)) {
             return value;
         }
         this._checkChildren(children);
-        return $to.dict(value, undefined, children[0].cast, TextType.cast);
+        const valueFn = children[0].cast;
+        return $to.dict(value, undefined, valueFn, TextType.cast);
     }
 
-    static docGen(children: Array<CastPointer>, target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
+    static docGen(children: Array<CastClass>, openApi: CastDocCallback): CastDocResponse {
         this._checkChildren(children);
-        return {type: 'object', properties: {}};
+        const valueFn = children[0].doc;
+        return openApi(this, {type: 'object', additionalProperties: valueFn(openApi)});
     }
 
-    private static _checkChildren(children: Array<CastPointer>): void {
+    private static _checkChildren(children: Array<CastClass>): void {
         if (children.length < 1) {
-            children.push(TextType);
+            children.push(AnyType);
         }
     }
 
     // region custom
 
 }
+export const Dict = DictType;

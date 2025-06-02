@@ -1,12 +1,11 @@
-import {$is, $to, Dict} from "@leyyo/common";
+import {$is, $to} from "@leyyo/common";
 import {Bind, Fqn} from "@leyyo/core";
-import {AssignType, CastApiDocResponse, castPool, CastPriority} from "@leyyo/cast";
-import {FQN_PCK} from "../internal";
-import moment from "moment";
+import {CastBasic, CastDocCallback, CastDocResponse, castHub, CastPriority} from "@leyyo/cast";
+import {FQN} from "../internal";
 
-// noinspection JSUnusedLocalSymbols
-@Fqn(FQN_PCK)
-@AssignType()
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastBasic()
 @Bind('static')
 export class StringType {
 
@@ -18,17 +17,23 @@ export class StringType {
         any: 99,
     } as CastPriority;
 
-    static is(value: unknown): boolean {
-        return $is.string(value);
+    static canBe(value: unknown): boolean {
+        return typeof value === 'string';
+    }
+
+    static exact(value: unknown): boolean {
+        return typeof value === 'string';
     }
 
     static cast(value: unknown): string {
         return $to.string(value);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'string'};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'string'});
+    }
+
+    static {
+        castHub.pending.addClone(StringType, String);
     }
 }
-
-castPool.copy(StringType, String);

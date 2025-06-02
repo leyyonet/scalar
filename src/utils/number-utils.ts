@@ -1,8 +1,8 @@
-import {NumberUtilsLike} from "./index-type";
+import {NumberUtilsLike} from "./index.types";
 import {Fqn} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 
-@Fqn(FQN_PCK)
+@Fqn(FQN)
 class NumberUtils implements NumberUtilsLike {
     isDivisibleBy(value: number, num: number): boolean {
         if (typeof value !== 'number' || typeof num !== 'number') {
@@ -16,13 +16,13 @@ class NumberUtils implements NumberUtilsLike {
         if (typeof value !== 'number' || typeof min !== 'number' || typeof max !== 'number') {
             return false;
         }
-        if (!Number.isInteger(value)) {
+        if ( !Number.isInteger(value)) {
             value = Math.round(value);
         }
-        if (!Number.isInteger(min)) {
+        if ( !Number.isInteger(min)) {
             min = Math.round(min);
         }
-        if (!Number.isInteger(max)) {
+        if ( !Number.isInteger(max)) {
             max = Math.round(max);
         }
         return (value >= min) && (value <= max);

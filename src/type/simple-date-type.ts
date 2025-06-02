@@ -1,12 +1,13 @@
 import moment from "moment";
-import {AssignType, CastApiDocResponse, CastPriority} from "@leyyo/cast";
+import {CastBasic, CastAlias, CastDocCallback, CastDocResponse, CastPriority} from "@leyyo/cast";
 import {Bind, Fqn} from "@leyyo/core";
-import {$is, $to, Dict, List} from "@leyyo/common";
-import {FQN_PCK} from "../internal";
+import {$is, $to} from "@leyyo/common";
+import {FQN} from "../internal";
 
-// noinspection JSUnusedLocalSymbols
-@Fqn(FQN_PCK)
-@AssignType('SimpleDate', 'IsoDate')
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastBasic()
+@CastAlias('SimpleDate', 'IsoDate')
 @Bind('static')
 export class SimpleDateType {
     private static readonly _PATTERN_YMD = /^\d{4}[\/\-.](0?[1-9]|1[012])[\/\-.](0?[1-9]|[12][0-9]|3[01])$/;
@@ -19,11 +20,7 @@ export class SimpleDateType {
         any: 99,
     } as CastPriority;
 
-    static exact(value: unknown): boolean {
-        return typeof value === 'string' && this._PATTERN_YMD.test(value);
-    }
-
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
         if ($is.empty(value)) {
             return false;
         }
@@ -37,6 +34,10 @@ export class SimpleDateType {
                 return Number.isInteger(value) && value > 0;
         }
         return false;
+    }
+
+    static exact(value: unknown): boolean {
+        return typeof value === 'string' && this._PATTERN_YMD.test(value);
     }
 
     static cast(value: unknown): string {
@@ -55,8 +56,11 @@ export class SimpleDateType {
         return $to.$secure.$unexpectedError(value, ['string', 'number', 'date']);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'string', format: 'date'};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'string', format: 'date'});
     }
 
+
 }
+export const SimpleDate = SimpleDateType;
+export const IsoDate = SimpleDateType;

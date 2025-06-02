@@ -1,9 +1,9 @@
-import {ScalarEmptyLine, StringUtilsLike} from "./index-type";
+import {ScalarEmptyLine, StringUtilsLike} from "./index.types";
 import {$dev, $to} from "@leyyo/common";
 import {Fqn} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 
-@Fqn(FQN_PCK)
+@Fqn(FQN)
 class StringUtils implements StringUtilsLike {
     private readonly _WHITESPACE_CHARS = [' ', '\t', '\n', '\r'];
 
@@ -20,7 +20,7 @@ class StringUtils implements StringUtilsLike {
     }
 
     hasEmptyLine(str: string): boolean {
-        if (!this.hasLine(str)) {
+        if ( !this.hasLine(str)) {
             return false;
         }
         str = str
@@ -40,7 +40,7 @@ class StringUtils implements StringUtilsLike {
     }
 
     lineCount(str: string): number {
-        if (!this.hasLine(str)) {
+        if ( !this.hasLine(str)) {
             return 0;
         }
         str = str
@@ -58,10 +58,10 @@ class StringUtils implements StringUtilsLike {
 
     // StripEmptyLines
     stripEmptyLines(str: string, delimiter: ScalarEmptyLine = '\n'): string {
-        if (!this.hasLine(str)) {
+        if ( !this.hasLine(str)) {
             return str;
         }
-        if (!['\r\n', '\r', '\n'].includes(delimiter)) {
+        if ( !['\r\n', '\r', '\n'].includes(delimiter)) {
             delimiter = '\n';
         }
         str = str
@@ -92,7 +92,7 @@ class StringUtils implements StringUtilsLike {
 
     // RemoveTabs
     removeTabs(str: string, replacement = ' '): string {
-        if (!this.hasTab(str)) {
+        if ( !this.hasTab(str)) {
             return str;
         }
         if (typeof replacement !== 'string') {
@@ -158,19 +158,22 @@ class StringUtils implements StringUtilsLike {
     }
 
     regexpToString(pattern: string | [string, string] | RegExp): string {
-        if (!pattern) {
+        if ( !pattern) {
             return null;
         }
         if (pattern instanceof RegExp) {
             return pattern.toString();
-        } else if (typeof pattern === 'string') {
+        }
+        else if (typeof pattern === 'string') {
             return pattern.startsWith('/') ? pattern : `/${pattern}/`;
-        } else if (Array.isArray(pattern)) {
+        }
+        else if (Array.isArray(pattern)) {
             if (typeof pattern[0] === 'string') {
                 return pattern[0].startsWith('/') ? `${pattern[0]}${pattern[1]}` : `/${pattern[0]}/${pattern[1]}`;
             }
             return pattern.join('/');
-        } else {
+        }
+        else {
             return $dev.secureJson(pattern, true);
         }
     }

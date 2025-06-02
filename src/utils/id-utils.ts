@@ -1,12 +1,10 @@
 import * as uuid from "uuid";
 import {$is, Func} from "@leyyo/common";
 import {Fqn} from "@leyyo/core";
-import {IdUtilsLike, NanoIdOpt} from "./index-type";
-import {FQN_PCK} from "../internal";
-import {customAlphabet, nanoid} from "nanoid";
-import {nanoid as nonSecureId} from "nanoid/non-secure";
+import {IdUtilsLike} from "./index.types";
+import {FQN} from "../internal";
 
-@Fqn(FQN_PCK)
+@Fqn(FQN)
 class IdUtils implements IdUtilsLike {
     readonly emptyUuid = uuid.NIL;
 
@@ -30,20 +28,10 @@ class IdUtils implements IdUtilsLike {
                 verStr = 'v4';
                 break;
         }
-        if (typeof uuid[version] !== 'function') {
-            version = 'v4';
+        if (typeof uuid[verStr] !== 'function') {
+            verStr = 'v4';
         }
-        return uuid[version]();
-    }
-
-    newNanoid(opt?: NanoIdOpt): string {
-        let fn: Func;
-        if (typeof opt?.alphabet === 'string') {
-            fn = customAlphabet(opt.alphabet, opt?.defaultSize ?? 10);
-        } else {
-            fn = opt?.nonSecure ? nonSecureId : nanoid;
-        }
-        return fn(opt?.length);
+        return uuid[verStr]();
     }
 }
 

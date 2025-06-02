@@ -1,5 +1,5 @@
 import {fqnHandler} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 
 /**
  * Time present items
@@ -12,4 +12,4 @@ export const TimePresentItems = ['year',
     'quarter'] as const;
 // noinspection JSUnusedGlobalSymbols
 export type TimePresent = typeof TimePresentItems[number];
-fqnHandler.literal('TimePresent', TimePresentItems, FQN_PCK);
+fqnHandler.literal('TimePresent', TimePresentItems, FQN);

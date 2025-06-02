@@ -1,9 +1,9 @@
 import {WeakFalse, WeakFalseItems, WeakTrue, WeakTrueItems} from "@leyyo/common";
-import {BoolUtilsLike} from "./index-type";
+import {BoolUtilsLike} from "./index.types";
 import {Fqn} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 
-@Fqn(FQN_PCK)
+@Fqn(FQN)
 class BoolUtils implements BoolUtilsLike {
 
     get falseItems(): Array<WeakFalse> {

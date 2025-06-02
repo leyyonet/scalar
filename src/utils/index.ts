@@ -1,4 +1,4 @@
-export * from './index-type';
+export * from './index.types';
 export * from './array-utils';
 export * from './bool-utils';
 export * from './date-utils';

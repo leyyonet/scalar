@@ -1,20 +1,26 @@
 import * as uuid from 'uuid';
 import {Bind, Fqn} from "@leyyo/core";
-import {AssignType, CastApiDocResponse, CastPriority} from "@leyyo/cast";
-import {$dev, $is, $to, Dict} from "@leyyo/common";
-import {FQN_PCK} from "../internal";
+import {CastBasic, CastAlias, CastDocCallback, CastDocResponse, CastPriority} from "@leyyo/cast";
+import {$dev, $is, $to} from "@leyyo/common";
+import {FQN} from "../internal";
 
-@Fqn(FQN_PCK)
-@AssignType('Uuid')
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastBasic()
+@CastAlias('Uuid')
 @Bind('static')
 export class UuidType {
 
     static readonly priority = {
-        string: 1,
+        string: 2,
         any: 99,
     } as CastPriority;
 
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
+        return this.exact(value);
+    }
+
+    static exact(value: unknown): boolean {
         if ($is.empty(value)) {
             return false;
         }
@@ -24,14 +30,20 @@ export class UuidType {
     static cast(value: unknown): string {
         const text = $to.text(value, () => $dev.opt({where: 'leyyo.scalar.UuidType'}));
         if (text && !uuid.validate(text)) {
-            throw $dev.invalidError({issue: 'invalid.uuid', expected: ['uuid'], type: typeof value, where: 'leyyo.scalar.UuidType'});
+            throw $dev.invalidError({
+                issue: 'invalid.uuid',
+                expected: ['uuid'],
+                type: typeof value,
+                where: 'leyyo.scalar.UuidType'
+            });
         }
         return text;
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'string'};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'string', format: 'uuid'});
     }
 }
 
 export {uuid};
+export const Uuid = UuidType;

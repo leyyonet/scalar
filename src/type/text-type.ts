@@ -1,10 +1,12 @@
 import {Bind, Fqn} from "@leyyo/core";
-import {AssignType, CastApiDocResponse, CastPriority} from "@leyyo/cast";
-import {$is, $to, Dict} from "@leyyo/common";
-import {FQN_PCK} from "../internal";
+import {CastBasic, CastAlias, CastDocCallback, CastDocResponse, CastPriority} from "@leyyo/cast";
+import {$is, $to} from "@leyyo/common";
+import {FQN} from "../internal";
 
-@Fqn(FQN_PCK)
-@AssignType('Text')
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastBasic()
+@CastAlias('Text')
 @Bind('static')
 export class TextType {
 
@@ -16,7 +18,10 @@ export class TextType {
         any: 99,
     } as CastPriority;
 
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
+        return typeof value === 'string';
+    }
+    static exact(value: unknown): boolean {
         return $is.text(value);
     }
 
@@ -24,7 +29,8 @@ export class TextType {
         return $to.text(value);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'string'};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'string', format: 'trimmed'});
     }
 }
+export const Text = TextType;

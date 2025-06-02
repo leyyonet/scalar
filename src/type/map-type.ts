@@ -1,13 +1,20 @@
-import {AssignGenerics, CastApiDocResponse, CastPointer, castPool, CastPriority} from "@leyyo/cast";
-import {$is, $to, Dict, ToSubIndexFnLambda} from "@leyyo/common";
+import {
+    CastGenerics,
+    CastClass,
+    CastDocCallback,
+    CastDocResponse,
+    castHub,
+    CastPriority
+} from "@leyyo/cast";
+import {$is, $to, ToSubIndexFnLambda} from "@leyyo/common";
 import {Bind, Fqn} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 import {TextType} from "./text-type";
 import {AnyType} from "./any-type";
 
-// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
-@Fqn(FQN_PCK)
-@AssignGenerics(2, 2, 'Map')
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastGenerics(0, 2)
 @Bind('static')
 export class MapType {
 
@@ -17,7 +24,11 @@ export class MapType {
         any: 99,
     } as CastPriority;
 
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
+        return $is.object(value);
+    }
+
+    static exact(value: unknown): boolean {
         return value instanceof Map;
     }
 
@@ -25,37 +36,40 @@ export class MapType {
         return $to.map(value);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'object', properties: {}};
-        // return {type: 'array', items: {$ref: '#/components/schemas/Pet'}};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'object', additionalProperties: true});
     }
 
-    static castGen(children: Array<CastPointer>, value: unknown): Record<any, any> {
+    static castGen(children: Array<CastClass>, value: unknown): Record<any, any> {
         if ($is.empty(value)) {
             return value;
         }
         this._checkChildren(children);
-        return $to.dict(value, undefined, children[1].cast, children[0].cast as ToSubIndexFnLambda<string>);
+        const keyFn = children[0].cast as ToSubIndexFnLambda<string>;
+        const valueFn = children[1].cast;
+        return $to.dict(value, undefined, valueFn, keyFn);
     }
 
-    static docGen(children: Array<CastPointer>, target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
+    static docGen(children: Array<CastClass>, openApi: CastDocCallback): CastDocResponse {
         this._checkChildren(children);
-        return {type: 'object', properties: {}};
+        const valueFn = children[1].doc;
+        return openApi(this, {type: 'object', additionalProperties: valueFn(openApi)});
     }
 
-    private static _checkChildren(children: Array<CastPointer>): void {
+    private static _checkChildren(children: Array<CastClass>): void {
         if (children.length < 1) {
             children.push(TextType);
             children.push(AnyType);
-        } else if (children.length < 2) {
-            const val = children.pop();
-            children.push(TextType);
-            children.push(val);
+        }
+        else if (children.length < 2) {
+            children.unshift(TextType);
         }
     }
 
     // region custom
 
-}
+    static {
+        castHub.pending.addClone(MapType, Map);
+    }
 
-castPool.copy(MapType, Map);
+}

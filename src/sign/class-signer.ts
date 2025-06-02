@@ -1,12 +1,11 @@
 import {DecoInstanceLike, Fqn} from "@leyyo/core";
 import {$assert, $descriptor, $dev, $is, ClassLike, Func, Obj} from "@leyyo/common";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 import {ClassHashLambda, ClassSignerLike, ClassSortLambda} from "./index-types";
+import {ScalarHashSign, ScalarSortSign} from "../internal.symbols";
 
-@Fqn(FQN_PCK)
+@Fqn(FQN)
 class ClassSigner implements ClassSignerLike {
-    private readonly objectHashSign = $descriptor.sym(FQN_PCK, 'objectHash');
-    private readonly objectSortSign = $descriptor.sym(FQN_PCK, 'objectSort');
 
     private _findFunction(target: ClassLike | Func | Obj): ClassLike | Func {
         if ($is.empty(target)) {
@@ -30,7 +29,8 @@ class ClassSigner implements ClassSignerLike {
             case 'function':
                 if (typeof target[kind] === 'function') {
                     return target[kind] as F;
-                } else {
+                }
+                else {
                     return target as F;
                 }
             case 'object':
@@ -83,19 +83,19 @@ class ClassSigner implements ClassSignerLike {
     }
 
     getHash<T = any>(target: ClassLike | Func | Obj, ins?: DecoInstanceLike, throwable?: boolean): ClassHashLambda<T> {
-        return this.get<ClassHashLambda<T>>(target, this.objectHashSign, ins, throwable);
+        return this.get<ClassHashLambda<T>>(target, ScalarHashSign, ins, throwable);
     }
 
     getSort<T = any>(target: ClassLike | Func | Obj, ins?: DecoInstanceLike, throwable?: boolean): ClassSortLambda<T> {
-        return this.get<ClassSortLambda<T>>(target, this.objectSortSign, ins, throwable);
+        return this.get<ClassSortLambda<T>>(target, ScalarSortSign, ins, throwable);
     }
 
     setHash<T = any>(target: ClassLike | Func | Obj, value: ClassHashLambda<T>, ins?: DecoInstanceLike): void {
-        this.set(target, this.objectHashSign, value, ins);
+        this.set(target, ScalarHashSign, value, ins);
     }
 
     setSort<T = any>(target: ClassLike | Func | Obj, value: ClassSortLambda<T>, ins?: DecoInstanceLike): void {
-        this.set(target, this.objectSortSign, value, ins);
+        this.set(target, ScalarSortSign, value, ins);
     }
 }
 

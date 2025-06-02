@@ -1,7 +1,7 @@
 import {Fqn} from '@leyyo/core';
 import {Loader} from "@leyyo/injection";
 
-import {FQN_PCK} from './internal';
+import {FQN} from './internal';
 import {decoratorItems} from "./decorators/loader";
 import {literalItems} from "./literals/loader";
 import {typeItems} from "./type/loader";
@@ -9,6 +9,6 @@ import {utilsItems} from "./utils/loader";
 
 
 @Loader(...decoratorItems, ...literalItems, ...typeItems, ...utilsItems)
-@Fqn(FQN_PCK)
+@Fqn(FQN)
 export class ScalarLoader {
 }

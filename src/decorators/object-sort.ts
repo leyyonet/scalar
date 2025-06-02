@@ -1,7 +1,7 @@
 import {bindHandler, decoratorPool} from "@leyyo/core";
-import {FQN_PCK} from "../internal";
+import {FQN} from "../internal";
 import {$assert, $dev, Dict} from "@leyyo/common";
-import {classSigner, ClassSortLambda} from "../class-signer";
+import {classSigner, ClassSortLambda} from "../sign";
 
 export function ObjectSort(fn: ClassSortLambda): ClassDecorator;
 export function ObjectSort(property: string): ClassDecorator;
@@ -20,7 +20,7 @@ interface P {
 }
 
 const deco = decoratorPool.newId<O, Dict, P>(ObjectSort)
-    .fqn(FQN_PCK)
+    .fqn(FQN)
     .targets('class')
     .rules('no-multiple', 'no-inherited')
     .processor((ins, p: P) => {
@@ -32,15 +32,18 @@ const deco = decoratorPool.newId<O, Dict, P>(ObjectSort)
             opt.property = p.fnOrProperty;
             if (typeof creator.prototype[opt.property] === 'function') {
                 opt.fn = creator.prototype[opt.property] as ClassSortLambda;
-            } else if (typeof creator[opt.property] === 'function') {
+            }
+            else if (typeof creator[opt.property] === 'function') {
                 opt.fn = creator[opt.property] as ClassSortLambda;
-            } else {
+            }
+            else {
                 throw $dev.invalidError({issue: 'property.not.found', desc: ins.description, property: opt.property});
             }
-            if (!bindHandler.isBound(opt.fn)) {
+            if ( !bindHandler.isBound(opt.fn)) {
                 throw $dev.developerError({issue: 'method.not.bound', desc: ins.description, property: opt.property});
             }
-        } else {
+        }
+        else {
             opt.fn = p.fnOrProperty;
             $assert.func(opt.fn, () => $dev.desc(ins, {field: 'fn'}));
         }

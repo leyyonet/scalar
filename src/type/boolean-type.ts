@@ -1,11 +1,12 @@
-import {AssignType, CastApiDocResponse, castPool, CastPriority} from "@leyyo/cast";
+import {CastBasic, CastAlias, CastDocCallback, CastDocResponse, castHub, CastPriority} from "@leyyo/cast";
 import {Bind, Fqn} from "@leyyo/core";
-import {$to, Dict, WeakFalse, WeakFalseItems, WeakTrue, WeakTrueItems} from "@leyyo/common";
-import {FQN_PCK} from "../internal";
+import {$to, WeakFalse, WeakFalseItems, WeakTrue, WeakTrueItems} from "@leyyo/common";
+import {FQN} from "../internal";
 
-// noinspection JSUnusedLocalSymbols
-@Fqn(FQN_PCK)
-@AssignType('Bool')
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastBasic()
+@CastAlias('Bool')
 @Bind('static')
 export class BooleanType {
     static readonly priority = {
@@ -15,20 +16,27 @@ export class BooleanType {
         bigint: 3,
     } as CastPriority;
 
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
         if (['boolean', 'number'].includes(typeof value)) {
             return true;
         }
         return WeakTrueItems.includes(value as WeakTrue) || WeakFalseItems.includes(value as WeakFalse);
     }
 
+    static exact(value: unknown): boolean {
+        return typeof value === 'boolean';
+    }
+
     static cast(value: unknown): boolean {
         return $to.boolean(value);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'boolean'};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'boolean'});
+    }
+
+    static {
+        castHub.pending.addClone(BooleanType, Boolean);
     }
 }
-
-castPool.copy(BooleanType, Boolean);
+export const Bool = BooleanType;

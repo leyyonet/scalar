@@ -2,7 +2,7 @@ import {Moment} from "moment";
 import {ClassLike, Dict, KeyValue, WeakFalse, WeakTrue} from "@leyyo/common";
 import {CastIsLambda} from "@leyyo/cast";
 import {TimeEdge, TimePart, TimePresent} from "../literals";
-import {ClassHashLambda, ClassSortLambda} from "../class-signer";
+import {ClassHashLambda, ClassSortLambda} from "../sign";
 
 export interface BoolUtilsLike {
     get trueItems(): Array<WeakTrue>;
@@ -49,8 +49,6 @@ export interface IdUtilsLike {
     newUuid(version?: string | number): string;
 
     isUuid(value: string): boolean;
-
-    newNanoid(opt?: NanoIdOpt): string;
 
     readonly emptyUuid: string;
 }
@@ -228,13 +226,6 @@ export interface ScalarEqualityDateResult {
     equality?: keyof ScalarEqualityDate;
     comparison?: Array<number>;
     reason?: string;
-}
-
-export interface NanoIdOpt extends Dict {
-    length?: number;
-    nonSecure?: boolean;
-    alphabet?: string;
-    defaultSize?: number;
 }
 
 export interface BufferExport {

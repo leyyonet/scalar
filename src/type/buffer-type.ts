@@ -1,12 +1,12 @@
-import {AssignType, CastApiDocResponse, castPool, CastPriority} from "@leyyo/cast";
+import {CastBasic, CastDocCallback, CastDocResponse, castHub, CastPriority} from "@leyyo/cast";
 import {Bind, Fqn} from "@leyyo/core";
-import {$is, $to, Dict} from "@leyyo/common";
-import {FQN_PCK} from "../internal";
+import {$is, $to} from "@leyyo/common";
+import {FQN} from "../internal";
 import {BufferExport} from "../utils";
 
-// noinspection JSUnusedLocalSymbols
-@Fqn(FQN_PCK)
-@AssignType()
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastBasic()
 @Bind('static')
 export class BufferType {
     static readonly priority = {
@@ -17,7 +17,7 @@ export class BufferType {
         any: 99,
     } as CastPriority;
 
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
         return value && (
             value instanceof Buffer ||
             value instanceof Int8Array ||
@@ -25,6 +25,9 @@ export class BufferType {
             typeof value === 'string' ||
             ((value as BufferExport)?.type === 'Buffer')
         );
+    }
+    static exact(value: unknown): boolean {
+        return value instanceof Buffer;
     }
 
     static cast(value: unknown): Buffer {
@@ -43,7 +46,8 @@ export class BufferType {
                 }
                 if (Array.isArray(value)) {
                     return Buffer.from(value)
-                } else {
+                }
+                else {
                     const exported = value as BufferExport;
                     // buffer.toJSON() ==> { type: 'Buffer',data: [ 84, 101 ] }
                     if (exported.type === 'Buffer') {
@@ -55,9 +59,11 @@ export class BufferType {
         return $to.$secure.$unexpectedError(value, ['string', 'object', 'array']);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'string', format: 'buffer'};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'string', format: 'buffer'});
+    }
+
+    static {
+        castHub.pending.addClone(BufferType, Buffer);
     }
 }
-
-castPool.copy(BufferType, Buffer);

@@ -1,12 +1,13 @@
 import moment from "moment";
-import {AssignType, CastApiDocResponse, CastPriority} from "@leyyo/cast";
+import {CastBasic, CastAlias, CastDocCallback, CastDocResponse, CastPriority} from "@leyyo/cast";
 import {Bind, Fqn} from "@leyyo/core";
-import {$is, $to, Dict} from "@leyyo/common";
-import {FQN_PCK} from "../internal";
+import {$is, $to} from "@leyyo/common";
+import {FQN} from "../internal";
 
-// noinspection JSUnusedLocalSymbols
-@Fqn(FQN_PCK)
-@AssignType('Time', 'SimpleTime', 'IsoTime')
+// noinspection JSUnusedGlobalSymbols
+@Fqn(FQN)
+@CastBasic()
+@CastAlias('Time', 'SimpleTime', 'IsoTime')
 @Bind('static')
 export class SimpleTimeType {
     private static readonly _PATTERN_HM = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
@@ -20,11 +21,7 @@ export class SimpleTimeType {
         any: 99,
     } as CastPriority;
 
-    static exact(value: unknown): boolean {
-        return typeof value === 'string' && (this._PATTERN_HMS.test(value) || this._PATTERN_HM.test(value) || this._PATTERN_HMSZ.test(value));
-    }
-
-    static is(value: unknown): boolean {
+    static canBe(value: unknown): boolean {
         if ($is.empty(value)) {
             return false;
         }
@@ -40,6 +37,10 @@ export class SimpleTimeType {
         return false;
     }
 
+    static exact(value: unknown): boolean {
+        return typeof value === 'string' && (this._PATTERN_HMS.test(value) || this._PATTERN_HM.test(value) || this._PATTERN_HMSZ.test(value));
+    }
+
     static cast(value: unknown): string {
         if ($is.empty(value)) {
             return value as undefined;
@@ -53,9 +54,11 @@ export class SimpleTimeType {
             let parts: Array<string>;
             if (this._PATTERN_HMS.test(str)) {
                 parts = str.split(':');
-            } else if (this._PATTERN_HM.test(str)) {
+            }
+            else if (this._PATTERN_HM.test(str)) {
                 parts = str.split(':');
-            } else {
+            }
+            else {
                 str = str.replace(/./g, ':');
                 parts = str.split(':');
             }
@@ -80,8 +83,11 @@ export class SimpleTimeType {
         return $to.$secure.$unexpectedError(value, ['string', 'number', 'date']);
     }
 
-    static doc(target: unknown, property: PropertyKey, openApi: Dict): CastApiDocResponse {
-        return {type: 'string', format: 'date'};
+    static doc(openApi: CastDocCallback): CastDocResponse {
+        return openApi(this, {type: 'string', format: 'time'});
     }
 
 }
+export const Time = SimpleTimeType;
+export const SimpleTime = SimpleTimeType;
+export const IsoTime = SimpleTimeType;
